@@ -1,0 +1,52 @@
+tasks.register("StartDevFabric1201") {
+    def gameVersion = '1.19.3'
+    def testServerVersion = '1.20.1'
+    def serverType = 'fabric'
+    def extraMods = 'MODRINTH_PROJECTS: "fabric-api:YblXfKtI"'
+
+    group = custom_test_group
+    description = "Upload & Start "+serverType+" Version "+testServerVersion
+
+    def modVersion = version
+    def archiveLocation = file(final_build + archives_base_name + '-' + serverType + '-' + gameVersion + '-' + modVersion + '.jar')
+    def noDotsVersion = testServerVersion.replace(".", "");
+    String composerFile = '''  
+version: "3"
+
+services:
+    survival:
+        image: itzg/minecraft-server
+        ports:
+            - ''' + noDotsVersion + ''':25565
+        environment:
+            GID: 1001
+            UID: 1001
+            MEMORY: "4G"
+            EULA: "TRUE"
+            TYPE: "''' + serverType + '''"
+            VERSION: ''' + testServerVersion + '''
+            USE_AIKAR_FLAGS: "TRUE"
+            ''' + extraMods + '''
+        tty: true
+        stdin_open: true
+        restart: unless-stopped
+        volumes:
+            - /home/dev-mc/''' + modVersion + '''/''' + testServerVersion + '''/:/data'''
+    doFirst {
+        println composerFile
+        ssh.run {
+            session(remotes.mcdev) {
+                execute 'mkdir -p ' + remote_base_dir + modVersion + '/' + testServerVersion + '/mods/'
+                put from: archiveLocation, into: remote_base_dir + modVersion + '/' + testServerVersion + '/mods/'
+                put text: composerFile, into: remote_base_dir + modVersion + '/' + testServerVersion + '/docker-compose.yml'
+            }
+        }
+    }
+    doLast {
+        ssh.run {
+            session(remotes.mcdev) {
+                execute 'docker-compose  --file ' + remote_base_dir + modVersion + '/' + testServerVersion + '/docker-compose.yml up --force-recreate -d'
+            }
+        }
+    }
+}

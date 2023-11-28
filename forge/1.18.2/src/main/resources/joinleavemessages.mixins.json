@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.networkglitch.joinleavemessages.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "joinleavemessages.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "server": [
+    "BroadcastChatMessageMixin",
+    "PlayerJoinMixin",
+    "PlayerLeaveMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

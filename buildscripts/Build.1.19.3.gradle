@@ -1,0 +1,34 @@
+def FinalHome = project.final_build
+def archivesBaseName = project.mod_name
+def gameVersion = '1.19.3' 
+String type
+
+tasks.register("BuildFabric1193", Copy) {
+    type = 'fabric'
+    group = custom_build_group
+    description = "Build "+type+" Version "+gameVersion
+    println("Attempting to build " + archivesBaseName + " version " + version + " for " + type + " - " + gameVersion)
+    dependsOn type + ':' + gameVersion + ':build'
+
+    from type + '/' + gameVersion + '/build/libs/' + archivesBaseName + '-' + type + '-' + gameVersion + "-"+version + '.jar'
+    into FinalHome
+    doFirst {
+        println("Attempting to copy " + archivesBaseName + " version " + version + " for " + type + " - " + gameVersion)
+    }
+}
+tasks.register("BuildForge1193", Copy) {
+    type = 'forge'
+    group = custom_build_group
+    description = "Build "+type+" Version "+gameVersion
+
+    println("Attempting to build " + archivesBaseName + " version " + version + " for " + type + " - " + gameVersion)
+    dependsOn type + ':' + gameVersion + ':build'
+    from type + '/' + gameVersion + '/build/libs/' + archivesBaseName + '-' + type + '-' + gameVersion + "-"+version + '.jar'
+    into FinalHome
+    doFirst {
+        println("Attempting to copy " + archivesBaseName + " version " + version + " for " + type + " - " + gameVersion)
+    }
+}
+tasks.register("Build1193") { task ->
+    dependsOn BuildFabric1193, BuildForge1193
+}

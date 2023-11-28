@@ -1,0 +1,38 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        gradleApi()
+    }
+}
+plugins {
+	id 'java'
+    id 'org.hidetake.ssh' version '2.11.2'
+} 
+apply plugin: 'java'
+version = "2.0.0"
+group = "com.networkglitch"
+ext {
+    custom_build_group = "Custom Builds"
+    custom_test_group = "Custom Tests"
+}
+
+fileTree("buildscripts").files.forEach { thisFile ->
+    apply from : thisFile
+}
+
+tasks.register("BuildAllMinecraft") {
+    group = custom_build_group
+    description = "Build this mod for all available minecraft versions listed in dependencies"
+    dependsOn Build1202, Build1193, Build1182
+    doLast {
+        println("All builds finished and should be in build/libs")
+    }
+}
+tasks.register("BuildCommon") {
+    group = custom_build_group
+    description = "Build the common library used by all versions"
+    dependsOn ":common:build"
+}
+tasks.withType(JavaCompile) {     options.compilerArgs += '-Xlint:-deprecation' }

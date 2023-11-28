@@ -1,0 +1,51 @@
+ext {
+    test_server_host = ''
+    test_server_key = ''
+    test_server_port = 22
+    test_server_user = ''
+    remote_base_dir = ''
+}
+if(file('.env').exists()) apply from : '.env'
+remotes {
+    mcdev {
+        host = test_server_host
+        user = test_server_user
+        port = test_server_port
+        identity = file(test_server_key)
+        knownHosts = allowAnyHosts
+    }
+}
+
+//
+// Main Task
+//
+tasks.register("StopAllContainers") {
+
+    group = custom_test_group
+    description = "Stop all running containers on the development server"
+    doFirst {
+        println("Stopping all docker containers")
+    }
+    doLast {
+        ssh.run {
+            session(remotes.mcdev) {
+                execute 'docker stop $(docker ps -a -q)'
+            }
+        }
+    }
+}
+tasks.register("RemoveAllContainers") {
+    group = custom_test_group
+    description = "Stop & remove all running containers on the development server"
+    dependsOn StopAllContainers
+    doFirst {
+        println("Removing all docker containers")
+    }
+    doLast {
+        ssh.run {
+            session(remotes.mcdev) {
+                execute 'docker rm $(docker ps -a -q)'
+            }
+        }
+    }
+}

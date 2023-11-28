@@ -1,0 +1,23 @@
+pluginManagement {
+    repositories {
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        maven {
+            name = 'MinecraftForge'
+            url = 'https://maven.minecraftforge.net/'
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+
+}
+rootProject.name = 'JoinLeaveMessages'
+include ':common'
+include ':fabric:1.20.2'
+include ':fabric:1.19.3'
+include ':fabric:1.18.2'
+include ':forge:1.20.2'
+include ':forge:1.19.3'
+include ':forge:1.18.2'
