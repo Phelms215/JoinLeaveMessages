@@ -39,7 +39,6 @@ public class PlayerJoinMixin {
             Optional<GameProfile> optional = this.server.getProfileCache().get(player.getGameProfile().getId());
             if (optional.isPresent())
                 optional.map(GameProfile::getName).ifPresent(oldName -> joinLeaveMessages$oldDisplayName = oldName);
-
         } catch (Exception exception) {
             Logging.MixinException(exception);
         }
@@ -58,10 +57,10 @@ public class PlayerJoinMixin {
                 }
                 Joinleavemessages.SendMessage(thisMessage, this.server);
             }
+
             String privateMessage = Joinleavemessages.config.SendPrivateMessage(player.getDisplayName().getString(), joinLeaveMessages$oldDisplayName == null);
             if (privateMessage == null) return;
             player.sendMessage(new TextComponent(privateMessage), ChatType.SYSTEM, Util.NIL_UUID);
-
         } catch (Exception exception) {
             Logging.MixinException(exception);
         }

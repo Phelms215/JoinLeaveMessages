@@ -5,11 +5,14 @@ import com.networkglitch.common.Definitions;
 import com.networkglitch.common.Logging;
 import com.networkglitch.joinleavemessages.Joinleavemessages;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.UserCache;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,13 +25,16 @@ public class PlayerJoinMixin {
     @Unique
     private String oldDisplayName = null;
 
+    @Final
+    @Shadow
+    private MinecraftServer server;
 
     @Inject(at = @At("HEAD"), method = "onPlayerConnect(Lnet/minecraft/network/ClientConnection;Lnet/minecraft/server/network/ServerPlayerEntity;)V")
     void newConnectionStart(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
         try {
             GameProfile gameProfile = player.getGameProfile();
-            if(player.getServer() == null) return;
-            UserCache userCache = player.getServer().getUserCache();
+            UserCache userCache = this.server.getUserCache();
+            if (userCache == null) return;
             Optional<GameProfile> optional = userCache.getByUuid(gameProfile.getId());
             if (optional.isEmpty()) return;
             oldDisplayName = optional.get().getName();
