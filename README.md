@@ -46,5 +46,4 @@ private_first_join_message_text         = Glad you are here %p! If you need any 
 # Is NOT sent with the first private join message
 private_join_message                    = false
 private_join_message_text               = Welcome back %p! If you need any help just let us know!
-
-</codeblock>
+```
