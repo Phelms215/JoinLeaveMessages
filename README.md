@@ -47,3 +47,8 @@ private_first_join_message_text         = Glad you are here %p! If you need any 
 private_join_message                    = false
 private_join_message_text               = Welcome back %p! If you need any help just let us know!
 ```
+
+## Support This Project
+Never required, but always appreciated. 
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B1J6ITH)
